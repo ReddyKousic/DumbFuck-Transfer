@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Awesome File Transfer App</title>
+</head>
+<style>
+    /* style.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+input[type="file"] {
+    margin: 20px 0;
+    padding: 10px;
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    width: 80%;
+    font-size: 16px;
+}
+
+input[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 10px 0;
+    font-size: 18px;
+}
+
+.progress-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.progress {
+    width: 80%;
+    height: 30px;
+    background-color: #eee;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #007bff;
+    border-radius: 20px;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #333;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.success {
+    background-color: #28a745;
+    color: white;
+}
+
+.error {
+    background-color: #dc3545;
+    color: white;
+}
+
+</style>
+<body>
+    <div class="header">
+        <h1>Awesome File Transfer App</h1>
+    </div>
+    <div class="container">
+        <form method="POST" action="/upload" enctype="multipart/form-data" id="upload-form">
+            <input type="file" name="file" id="file-input">
+            <input type="submit" value="Upload File">
+        </form>
+
+        <h2>Uploaded Files:</h2>
+        <ul id="file-list">
+            {% for file in files %}
+            <li><a href="/download/{{ file }}">{{ file }}</a></li>
+            {% endfor %}
+        </ul>
+
+        <div class="progress-container">
+            <h2>Upload Progress:</h2>
+            <div class="progress">
+                <div class="progress-bar" id="progress-bar" style="width: 0;"></div>
+                <div class="progress-text">0%</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript code for AJAX upload and progress tracking (remains the same)
+        function updateProgressBar(loaded, total) {
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.value = (loaded / total) * 100;
+        }
+
+        // Function to handle file upload progress
+        function handleFileUploadProgress(event) {
+            if (event.lengthComputable) {
+                updateProgressBar(event.loaded, event.total);
+            }
+        }
+
+        // Function to submit the file upload form with AJAX
+        function uploadFile() {
+            const fileInput = document.getElementById('file-input');
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            const xhr = new XMLHttpRequest();
+            xhr.upload.addEventListener('progress', handleFileUploadProgress);
+            xhr.open('POST', '/upload', true);
+            xhr.send(formData);
+        }
+
+        // Attach the uploadFile function to the form submit event
+        const uploadForm = document.getElementById('upload-form');
+        uploadForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            uploadFile();
+        });
+    </script>
+</body>
+</html>
