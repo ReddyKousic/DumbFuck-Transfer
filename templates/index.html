@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Awesome File Transfer App</title>
+    <title>DF-Transfer</title>
 </head>
 <style>
     /* style.css */
@@ -110,11 +110,32 @@ li {
     background-color: #dc3545;
     color: white;
 }
+#file-list {
+        margin-top: 20px;
+    }
 
+    #file-list li {
+        margin: 10px 0;
+        font-size: 18px;
+    }
+
+    #file-list li a {
+        text-decoration: none;
+        color: #333;
+        padding: 5px 10px;
+        background-color: #f0f0f0;
+        border-radius: 5px;
+        display: inline-block;
+        transition: background-color 0.3s ease;
+    }
+
+    #file-list li a:hover {
+        background-color: #ddd;
+    }
 </style>
 <body>
     <div class="header">
-        <h1>Awesome File Transfer App</h1>
+        <h1>DF-Transfer</h1>
     </div>
     <div class="container">
         <form method="POST" action="/upload" enctype="multipart/form-data" id="upload-form">
@@ -138,11 +159,15 @@ li {
         </div>
     </div>
 
+
     <script>
-        // JavaScript code for AJAX upload and progress tracking (remains the same)
+        // Function to update the progress bar
         function updateProgressBar(loaded, total) {
             const progressBar = document.getElementById('progress-bar');
-            progressBar.value = (loaded / total) * 100;
+            const progressText = document.querySelector('.progress-text');
+            const percent = Math.round((loaded / total) * 100);
+            progressBar.style.width = percent + '%';
+            progressText.textContent = percent + '%';
         }
 
         // Function to handle file upload progress
@@ -150,6 +175,18 @@ li {
             if (event.lengthComputable) {
                 updateProgressBar(event.loaded, event.total);
             }
+        }
+
+        // Function to handle successful upload
+        function handleUploadSuccess() {
+            // Refresh the page after successful upload
+            window.location.reload();
+        }
+
+        // Function to handle upload errors
+        function handleUploadError(error) {
+            console.error('Upload failed:', error);
+            // You can add error handling logic here if needed
         }
 
         // Function to submit the file upload form with AJAX
@@ -160,6 +197,8 @@ li {
 
             const xhr = new XMLHttpRequest();
             xhr.upload.addEventListener('progress', handleFileUploadProgress);
+            xhr.addEventListener('load', handleUploadSuccess);
+            xhr.addEventListener('error', handleUploadError);
             xhr.open('POST', '/upload', true);
             xhr.send(formData);
         }

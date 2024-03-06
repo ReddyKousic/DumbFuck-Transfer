@@ -11,7 +11,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def index():
     # Get the list of uploaded files in the UPLOAD_FOLDER
     uploaded_files = os.listdir(app.config['UPLOAD_FOLDER'])
-    return render_template('index1.html', files=uploaded_files)
+    return render_template('index.html', files=uploaded_files)
 
 @app.route('/upload', methods=['POST'])
 def upload():
